@@ -3,9 +3,11 @@ import { Track } from "../../interfaces/Track";
 import axios from "axios";
 import { ImageArray } from "./ImageArray";
 import { LastFmTrack } from "./LastFmTrack";
-import { equal } from "assert";
+import { strictEqual } from "assert";
 import { Result } from "./Result";
 import { LastFmConfiguration } from "../../interfaces/LastFmConfiguration";
+import { Job } from "../../interfaces/Job";
+import { jobLog } from "../jobLog";
 
 const transformUts = (uts: string): Date => new Date(parseInt(uts) * 1000);
 
@@ -38,12 +40,14 @@ const constructUrl = (page: number, { apiKey, username }: LastFmConfiguration): 
   &api_key=${apiKey}&format=json&page=${page}`;
 
 export const fetchPage = async (
-  collection: Collection<Track>,
+  trackCollection: Collection<Track>,
+  jobCollection: Collection<Job>,
   page: number,
   configuration: LastFmConfiguration,
+  job?: Job,
 ): Promise<number> => {
-  const { debug } = configuration;
-  if (debug) console.info(`Fetching page ${page}`);
+  const task = job == null ? "fetch_page" : "fetch_all";
+  jobLog(jobCollection, task, job, `Fetching page ${page}`);
   const {
     data: {
       recenttracks: { track: tracks },
@@ -52,11 +56,11 @@ export const fetchPage = async (
 
   const transformedTracks = tracks.map(transform);
 
-  collection.insertMany(transformedTracks, (err, result) => {
-    equal(err, null);
-    equal(transformedTracks.length, result.result.n);
-    equal(transformedTracks.length, result.ops.length);
-    if (debug) console.info(`Inserted ${result.ops.length} into the Tracks collection`);
+  trackCollection.insertMany(transformedTracks, (err, result) => {
+    strictEqual(err, null);
+    strictEqual(transformedTracks.length, result.result.n);
+    strictEqual(transformedTracks.length, result.ops.length);
+    jobLog(jobCollection, task, job, `Inserted ${result.ops.length} into the Tracks collection`);
   });
 
   return transformedTracks.length;

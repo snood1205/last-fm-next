@@ -1,6 +1,7 @@
 import { MongoClient, Db, Collection } from "mongodb";
 import { Track } from "../interfaces/Track";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Job } from "../interfaces/Job";
 
 export interface Collections {
   [key: string]: Collection;
@@ -14,6 +15,7 @@ interface ClientWithCollections {
 
 const initializeCollections = (db: Db) => ({
   trackCollection: db.collection<Track>("tracks"),
+  jobCollection: db.collection<Job>("jobs"),
 });
 
 const initializeClient = async (): Promise<ClientWithCollections> => {

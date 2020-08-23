@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { parsePaginationOptions } from "../../../lib/functions/parsePaginationOptions";
 import { PaginationQuery } from "../../../lib/interfaces/PaginationQuery";
 import { allTracks } from "../../../lib/functions/allTracks";
-import { mongoConnection, AsyncCallback, CallbackFactory } from "../../../lib/functions/mongoConnection";
+import { mongoConnection, CallbackFactory } from "../../../lib/functions/mongoConnection";
 import { Track } from "../../../lib/interfaces/Track";
 
 interface JSON {
@@ -10,11 +10,7 @@ interface JSON {
   maximumPage: number;
 }
 
-const callbackFactory: CallbackFactory<JSON> = ({ query }): AsyncCallback<JSON> => async (
-  _client,
-  _db,
-  collections,
-): Promise<JSON> => {
+const callbackFactory: CallbackFactory<JSON> = ({ query }) => async (_client, _db, collections) => {
   const { trackCollection: collection } = collections;
   const paginationQuery = (query as unknown) as PaginationQuery;
   const paginationOptions = parsePaginationOptions({ paginationQuery });
