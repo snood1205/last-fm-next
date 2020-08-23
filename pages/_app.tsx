@@ -1,3 +1,6 @@
+import { StrictMode } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import "../styles/globals.css";
 
 interface Props {
@@ -5,6 +8,10 @@ interface Props {
   pageProps: Record<string, unknown>;
 }
 
-const Application: React.FC<Props> = ({ Component, pageProps }: Props) => <Component {...pageProps} />;
+const Application: React.FC<Props> = ({ Component, pageProps }: Props) => (
+  <StrictMode>
+    <Component {...pageProps} />
+  </StrictMode>
+);
 
 export default Application;

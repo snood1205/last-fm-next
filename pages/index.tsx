@@ -1,7 +1,3 @@
-const Home: React.FC = () => (
-  <div>
-    <h1>Welcome to the base Typescript NextJS application.</h1>
-  </div>
-);
+import Home from "./page/[page]";
 
 export default Home;

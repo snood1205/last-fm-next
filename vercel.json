@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "env": {
+    "MONGODB_URI": "@my-mongodb-uri",
+    "LAST_FM_API_KEY": "@last-fm-api-key"
+  }
+}
